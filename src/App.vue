@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <Board />
+    <Board :tiles="this.$root.$data.tiles" />
+
+    <button v-on:mousedown="this.$root.grabRandomTile">New Tile</button>
   </div>
 </template>
 
