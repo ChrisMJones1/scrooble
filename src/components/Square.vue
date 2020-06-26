@@ -53,10 +53,10 @@
 
             },
             mouseClick: function() {
-                if(this.tileSelected && !this.tileDown) {
+                if(this.tileSelected && !this.tile.placed) {
                     let myLetter = this.$root.$data.currentLetter;
                     console.log(myLetter);
-                    this.tileDown = true;
+                    // this.tileDown = true;
                     this.tile.letter = myLetter.character;
                     this.tile.value = myLetter.value;
                     let tileBackground = this.$el.querySelector(".letterTile");

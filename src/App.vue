@@ -3,9 +3,10 @@
     <ScoreBoard :player1Score="player1Score" :player2Score="player2Score" :playerTurn="playerTurn" />
     <Board @tilePlacedOnBoard="tilePlacedOnBoard" :tilePlaced="tilePlaced" :tileSelected="tileSelected" :tiles="this.$root.$data.tiles" />
 
-    <TileRack :playerTurn="playerTurn" :player="1" :score="player1Score" :lastTiles="lastTilesPlayer1" @tileChosen="tileChosen" :tiles="this.$root.$data.player1Tiles" :tileSelected="tileSelected" />
-    <TileRack :playerTurn="playerTurn"  :player="2" :score="player2Score" :lastTiles="lastTilesPlayer2" @tileChosen="tileChosen" :tiles="this.$root.$data.player2Tiles" :tileSelected="tileSelected" />
+    <TileRack :shownTile="shownTilePlayer1" :playerTurn="playerTurn" :player="1" :score="player1Score" :lastTiles="lastTilesPlayer1" @tileChosen="tileChosen" :tiles="this.$root.$data.player1Tiles" :tileSelected="tileSelected" />
+    <TileRack :shownTile="shownTilePlayer2" :playerTurn="playerTurn"  :player="2" :score="player2Score" :lastTiles="lastTilesPlayer2" @tileChosen="tileChosen" :tiles="this.$root.$data.player2Tiles" :tileSelected="tileSelected" />
     <button class="turnButton" v-on:mousedown="endTurn">Finish Turn</button>
+    <button class="undoButton" v-on:mousedown="undoMove">Undo Last Move</button>
 <!--    <button v-on:mousedown="this.$root.grabRandomTile">New Tile</button>-->
   </div>
 </template>
@@ -33,6 +34,8 @@ export default {
       turnTiles: [],
       lastTilesPlayer1: [],
       lastTilesPlayer2: [],
+      shownTilePlayer1: [],
+      shownTilePlayer2: [],
     }
 
   },
@@ -45,6 +48,12 @@ export default {
       this.$root.$data.tiles[value.index].placed = true;
       this.turnTiles.unshift(value);
       this.tileSelected = false;
+
+      if(this.playerTurn === 1) {
+        this.lastTilesPlayer1.unshift(this.shownTilePlayer1.pop());
+      } else if(this.playerTurn === 2) {
+        this.lastTilesPlayer2.unshift(this.shownTilePlayer2.pop());
+      }
     },
     endTurn: function () {
       this.$root.$data.currentTile = null;
@@ -188,6 +197,28 @@ export default {
       }
       return score * wordMultiplier;
     },
+    undoMove: function () {
+      if(this.playerTurn === 1 && this.lastTilesPlayer1.length > 0) {
+        let undoTile = this.lastTilesPlayer1.shift();
+        document.getElementById(`tileRack-${undoTile.id}`).classList.remove('hidden');
+        let undoBoardTile = this.turnTiles.shift();
+        this.$root.$data.tiles[undoBoardTile.index].letter = "";
+        this.$root.$data.tiles[undoBoardTile.index].placed = false;
+        this.$root.$data.tiles[undoBoardTile.index].value = 0;
+        document.querySelector(`#Square-${undoBoardTile.index} .wood-grain`).classList.remove('wood-grain');
+
+      } else if(this.playerTurn === 2 && this.lastTilesPlayer2.length > 0) {
+        let undoTile = this.lastTilesPlayer2.shift();
+        document.getElementById(`tileRack-${undoTile.id}`).classList.remove('hidden');
+
+        let undoBoardTile = this.turnTiles.shift();
+        this.$root.$data.tiles[undoBoardTile.index].letter = "";
+        this.$root.$data.tiles[undoBoardTile.index].placed = false;
+        this.$root.$data.tiles[undoBoardTile.index].value = 0;
+        document.getElementById(`Square-${undoBoardTile.id}`).classList.remove('wood-grain');
+
+      }
+    }
   }
 }
 </script>
@@ -223,5 +254,21 @@ export default {
     background-image: url("data:image/svg+xml,%3Csvg width='16' height='20' viewBox='0 0 16 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23cccccc' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M8 0v20L0 10M16 0v10L8 0M16 10v10H8'/%3E%3C/g%3E%3C/svg%3E");
 
   }
+
+.undoButton {
+  position: absolute;
+  right: 10vmin;
+  bottom: 20vmin;
+  padding: 0.5em 1em;
+  font-size: 2em;
+
+  border: 2px solid #b9b342;
+
+  border-radius: 40px;
+
+  background-color: #a6b457;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='20' viewBox='0 0 16 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23cccccc' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M8 0v20L0 10M16 0v10L8 0M16 10v10H8'/%3E%3C/g%3E%3C/svg%3E");
+
+}
 
 </style>
