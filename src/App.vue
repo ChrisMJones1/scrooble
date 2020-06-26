@@ -42,6 +42,7 @@ export default {
     },
     tilePlacedOnBoard: function (value) {
       this.$root.$data.currentLetter = null;
+      this.$root.$data.tiles[value.index].placed = true;
       this.turnTiles.unshift(value);
       this.tileSelected = false;
     },
@@ -86,28 +87,107 @@ export default {
 
         this.playerTurn = 1;
       }
+      let result = '';
+      while(result !== undefined) {
+        result = this.$root.$data.tiles.find(tile => tile.new === true && tile.placed === true);
+        if(result !== undefined) {
+          this.$root.$data.tiles[result.index].new = false;
+        } else {
+          break;
+        }
+      }
+
     },
     computeScore: function () {
-      //TODO Actually make a score computer that works properly
-      let wordMultiplier = [];
       let turnScore = 0;
-      for(let tiles of this.turnTiles) {
-        if(tiles.wordMultiplier > 1) {
-          wordMultiplier.push(tiles.wordMultiplier);
-          console.log(wordMultiplier);
+      let scoreSet = new Set();
+      let xySet = new Set();
+      let direction = 0; //0 = no direction, 1 is horizontal, 2 is vert
+      if(this.turnTiles.length > 1) {
+        direction = this.turnTiles[0].x === this.turnTiles[1].x ? 1 : 2;
+      }
+      if(direction !== 0) {
+        let directionX = 0;
+        let directionY = 0;
+        if(direction === 1) {
+          directionY = 1;
+        } else {
+          directionX = 1;
         }
-        turnScore += (tiles.value * tiles.letterMultiplier)
-        for(let placedTiles of this.gameHistory) {
-          if(((placedTiles.x === tiles.x + 1 || placedTiles.x === tiles.x - 1 ) && placedTiles.y === tiles.y) || ((placedTiles.y === tiles.y + 1 || placedTiles.y === tiles.y - 1) && placedTiles.x === tiles.x)) {
-            turnScore += placedTiles.value;
+        for(let tile of this.turnTiles) {
+          scoreSet.add(`${tile.x}.${tile.y}.${directionX}.${directionY}.${tile.letterMultiplier}.${tile.wordMultiplier}`);
+        }
+      }
+      for(let tiles of this.turnTiles) {
+
+        for (let placedTiles of this.gameHistory) {
+          if ((((placedTiles.x === tiles.x + 1 || placedTiles.x === tiles.x - 1) && placedTiles.y === tiles.y) || ((placedTiles.y === tiles.y + 1 || placedTiles.y === tiles.y - 1) && placedTiles.x === tiles.x))) {
+            //intersection = true;
+            let directionX = Math.abs(placedTiles.x - tiles.x);
+            let directionY = Math.abs(placedTiles.y - tiles.y);
+            scoreSet.add(`${tiles.x}.${tiles.y}.${directionX}.${directionY}.${1}.${1}`);
+
           }
         }
       }
-      for(let wordMulti of wordMultiplier) {
-        turnScore *= wordMulti
+      for(let scoreLine of scoreSet) {
+        let currentTile = scoreLine.split('.');
+        currentTile = currentTile.map(tile => parseInt(tile));
+        console.log(currentTile);
+        let currentXY = currentTile[2] === 1 ? `Y${currentTile[1]}` : `X${currentTile[0]}`;
+        if(!xySet.has(currentXY)) {
+          xySet.add(currentXY);
+          turnScore += this.lineSearch(currentTile[0], currentTile[1], currentTile[2], currentTile[3]);
+          console.log(xySet);
+        }
+
+
       }
+
+
+      console.log(scoreSet);
       return turnScore
-    }
+    },
+    lineSearch: function (x, y, xDirection, yDirection) {
+      let endOfLetters = false;
+      //let letterSet = new Set();
+      let otherDirection = false;
+      let tileX = x;
+      let tileY = y;
+      xDirection = parseInt(xDirection);
+      yDirection = parseInt(yDirection);
+      let tile = this.$root.$data.tiles.find(tile => tile.x === tileX && tile.y === tileY);
+      let score = tile.value * tile.letterMultiplier;
+      let wordMultiplier = tile.wordMultiplier;
+      while(!endOfLetters) {
+        tileX += xDirection;
+        tileY += yDirection;
+        const letterSearch = this.$root.$data.tiles.find(placedTile => placedTile.x === tileX && placedTile.y === tileY);
+        if(letterSearch === undefined) {
+          if(otherDirection === true) {
+            endOfLetters = true;
+            break;
+          }
+          otherDirection = true;
+          xDirection *= -1;
+          yDirection *= -1;
+          tileY = y;
+          tileX = x;
+          continue;
+        } else {
+          if(letterSearch.new === true && letterSearch.placed === true) {
+            score += letterSearch.value * letterSearch.letterMultiplier;
+            if(letterSearch.wordMultiplier > wordMultiplier) {
+              wordMultiplier = letterSearch.wordMultiplier;
+            }
+          } else if(letterSearch.placed === true) {
+            score += letterSearch.value;
+          }
+        }
+
+      }
+      return score * wordMultiplier;
+    },
   }
 }
 </script>

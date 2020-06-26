@@ -19,6 +19,8 @@ class Tile {
         this.wordMultiplier = this.tileMultiplier === "TW" ? 3 : this.tileMultiplier === "DW" ? 2 : 1;
         this.letter = "";
         this.value = 0;
+        this.new = true;
+        this.placed = false;
     }
 }
 
