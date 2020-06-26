@@ -1,6 +1,6 @@
 <template>
     <div class="board">
-        <Square v-for="(tile, index) in tiles" :key="`tile-${index}`" v-bind:tile="tile" v-bind:index="index"  />
+        <Square :id="`Square-${index}`" v-for="(tile, index) in tiles" :key="`tileBoard-${index}`" :tileSelected="tileSelected" v-bind:tile="tile" v-bind:index="index"  />
 
     </div>
 </template>
@@ -10,7 +10,7 @@
     export default {
         name: "Board",
         components: {Square},
-        props: ['tiles']
+        props: ['tiles', 'tileSelected', 'tilePlaced']
     }
 </script>
 

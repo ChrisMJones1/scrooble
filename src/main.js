@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 
 Vue.config.productionTip = false
-
+let letterId = 0;
 class Tile {
     constructor(index) {
         this.index = index;
@@ -23,9 +23,10 @@ class Tile {
 }
 
 class Letter {
-    constructor(character, value) {
+    constructor(character, value, id) {
         this.character = character;
         this.value = value;
+        this.id = id
     }
 }
 
@@ -36,15 +37,15 @@ const tiles = [];
 
 let gameBag = initializeTileBag();
 
-console.log(gameBag);
-
+// console.log(gameBag);
+//
 let player1Hand = drawTiles(7);
-
-console.log(player1Hand);
-
+//
+// console.log(player1Hand);
+//
 let player2Hand = drawTiles(7);
-
-console.log(player2Hand);
+//
+// console.log(player2Hand);
 
 for (let i = 0; i < 225; i++) {
     let newTile = new Tile(i);
@@ -57,14 +58,16 @@ new Vue({
     data: {
         tiles: tiles,
         gameBag: gameBag,
-        currentLetter: new Letter()
+        currentLetter: null,
+        player1Tiles: player1Hand,
+        player2Tiles: player2Hand
     },
     methods: {
         grabRandomTile: function () {
             let randomLetter = this.gameBag.splice(Math.floor(Math.random() * gameBag.length), 1);
-            this.currentLetter = randomLetter[0];
-            console.log(this.currentLetter);
-            //return randomLetter
+            //this.currentLetter = randomLetter[0];
+            console.log(randomLetter);
+            return randomLetter
         },
       drawTiles: function (drawNumber) {
         drawNumber = drawNumber > this.gameBag.length ? this.gameBag.length : drawNumber;
@@ -73,15 +76,26 @@ new Vue({
           tempTileArray.push(...this.grabRandomTile());
         }
         return tempTileArray;
-      }
+      },
+        fillHand: function (player, count, tempArray) {
+            if(player === 1) {
+                tempArray.push(...this.drawTiles(count));
+                this.player1Tiles = tempArray;
+            } else if(player === 2) {
+                tempArray.push(...this.drawTiles(count));
+                this.player2Tiles = tempArray
+            }
+        }
     }
 }).$mount('#app');
 
 
 function generateLetters(letter, value, count) {
     const tempLetterArray = [];
+
     for (let i = 0; i < count; i++) {
-        tempLetterArray.push(new Letter(letter, value));
+        letterId++;
+        tempLetterArray.push(new Letter(letter, value, letterId));
     }
     return tempLetterArray
 }
