@@ -1,6 +1,6 @@
 <template>
     <div v-if="this.playerTurn === this.player">
-        <div v-bind:class="`tileRack${this.player}`">
+        <div v-bind:class="`tileRack${this.player} minTileRack`">
             <Tile :interactive="true" :tileSelected="tileSelected" v-for="(tile, index) in tiles" :key="`player1tile-${index}`" :id="`tileRack-${tile.id}`" @selectTile="selectTile" v-on:chooseTile="selectTile" v-bind:tile="tile" v-bind:index="index" />
         </div>
         <div id="currentlySelectedTile" v-bind:class="`lastPlayed${this.player}`" v-if="lastTiles.length > 0 && this.$root.$data.currentLetter !== null"><Tile :interactive="false" v-bind:tile="lastTiles[0]" /></div>
@@ -49,6 +49,10 @@
     top: 10vmin;
     grid-gap: 5px;
     /*height: 200px;*/
+}
+.minTileRack {
+    min-width: 300px;
+    min-height: 40px;
 }
 
 .tileRack2 {
