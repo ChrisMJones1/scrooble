@@ -16,8 +16,8 @@
 
 <style scoped>
     .board {
-        width: 95vmin;
-        height: 95vmin;
+        width: 50vw;
+        height: 50vw;
         min-height: 500px;
         min-width: 500px;
         background: tan;

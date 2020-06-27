@@ -167,7 +167,8 @@ export default {
       yDirection = parseInt(yDirection);
       let tile = this.$root.$data.tiles.find(tile => tile.x === tileX && tile.y === tileY);
       let score = tile.value * tile.letterMultiplier;
-      let wordMultiplier = tile.wordMultiplier;
+      let wordMultiplier = [];
+      wordMultiplier.push(tile.wordMultiplier);
       while(!endOfLetters) {
         tileX += xDirection;
         tileY += yDirection;
@@ -186,16 +187,18 @@ export default {
         } else {
           if(letterSearch.new === true && letterSearch.placed === true) {
             score += letterSearch.value * letterSearch.letterMultiplier;
-            if(letterSearch.wordMultiplier > wordMultiplier) {
-              wordMultiplier = letterSearch.wordMultiplier;
-            }
+            wordMultiplier.push(letterSearch.wordMultiplier);
+
           } else if(letterSearch.placed === true) {
             score += letterSearch.value;
           }
         }
 
       }
-      return score * wordMultiplier;
+      for(let multi of wordMultiplier) {
+        score *= multi
+      }
+      return score;
     },
     undoMove: function () {
       if(this.playerTurn === 1 && this.lastTilesPlayer1.length > 0) {
@@ -215,7 +218,7 @@ export default {
         this.$root.$data.tiles[undoBoardTile.index].letter = "";
         this.$root.$data.tiles[undoBoardTile.index].placed = false;
         this.$root.$data.tiles[undoBoardTile.index].value = 0;
-        document.getElementById(`Square-${undoBoardTile.id}`).classList.remove('wood-grain');
+        document.querySelector(`#Square-${undoBoardTile.index} .wood-grain`).classList.remove('wood-grain');
 
       }
     }
