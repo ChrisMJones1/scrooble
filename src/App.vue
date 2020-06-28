@@ -173,7 +173,7 @@ export default {
         tileX += xDirection;
         tileY += yDirection;
         const letterSearch = this.$root.$data.tiles.find(placedTile => placedTile.x === tileX && placedTile.y === tileY);
-        if(letterSearch === undefined) {
+        if(letterSearch === undefined || letterSearch.letter === "") {
           if(otherDirection === true) {
             endOfLetters = true;
             break;
