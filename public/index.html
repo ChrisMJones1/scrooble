@@ -19,6 +19,35 @@
       *, *::before, *::after {
         box-sizing: inherit;
         font-family: 'Josefin Sans', sans-serif;
+      @media only screen and (max-width: 800px) {
+        .turnButton, .undoButton {
+          font-size: 1rem;
+        }
+        .board * {
+          font-size: 0.75rem !important;
+        }
+        .turnButton {
+          right: 0;
+          bottom: 0;
+        }
+        .undoButton {
+          right: 0;
+          bottom: 3rem;
+        }
+        .tileRack1 {
+          top: 55vh;
+        }
+        .lastPlayed1 {
+          top: 70vh;
+        }
+        .tileRack2 {
+          top: 55vh;
+        }
+        .lastPlayed2 {
+          top: 70vh;
+        }
+
+
       }
     </style>
   </head>
