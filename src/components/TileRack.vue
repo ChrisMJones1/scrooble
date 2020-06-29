@@ -3,7 +3,7 @@
         <div v-bind:class="`tileRack${this.player} minTileRack`">
             <Tile :interactive="true" :tileSelected="tileSelected" v-for="(tile, index) in tiles" :key="`player1tile-${index}`" :id="`tileRack-${tile.id}`" @selectTile="selectTile" v-on:chooseTile="selectTile" v-bind:tile="tile" v-bind:index="index" />
         </div>
-        <div v-on:mousedown="cancelTilePlacement" id="currentlySelectedTile" v-bind:class="`lastPlayed${this.player}`" v-if="shownTile.length > 0 && this.$root.$data.currentLetter !== null"><Tile :interactive="false" v-bind:tile="this.shownTile[0]" /></div>
+        <div v-on:mousedown="cancelTilePlacement" id="currentlySelectedTile" v-bind:class="`lastPlayed${this.player} minTileRack`" v-if="shownTile.length > 0 && this.$root.$data.currentLetter !== null"><Tile :interactive="false" v-bind:tile="this.shownTile[0]" /></div>
 <!--        <button v-on:mousedown="cancelTilePlacement">Undo tile</button>-->
     </div>
 </template>
@@ -93,5 +93,18 @@
     .hidden {
         display: none;
     }
-
+@media only screen and (max-width: 800px) {
+    .tileRack1 {
+        top: 55vh;
+    }
+    .lastPlayed1 {
+        top: 70vh;
+    }
+    .tileRack2 {
+        top: 55vh;
+    }
+    .lastPlayed2 {
+        top: 70vh;
+    }
+}
 </style>

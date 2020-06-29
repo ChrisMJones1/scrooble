@@ -18,8 +18,8 @@
     .board {
         width: 50vw;
         height: 50vw;
-        min-height: 500px;
-        min-width: 500px;
+        min-height: 350px;
+        min-width: 350px;
         background: tan;
         display: grid;
         grid-template-columns: repeat(15, 1fr);
