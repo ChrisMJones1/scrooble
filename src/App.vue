@@ -112,6 +112,9 @@ export default {
       let scoreSet = new Set();
       let xySet = new Set();
       let direction = 0; //0 = no direction, 1 is horizontal, 2 is vert
+      if(this.turnTiles.length === 1 && this.gameHistory.length === 0) { //handling edge case where only one letter is placed on the first turn
+        return this.turnTiles[0].value * this.turnTiles[0].wordMultiplier
+      }
       if(this.turnTiles.length > 1) {
         direction = this.turnTiles[0].x === this.turnTiles[1].x ? 1 : 2;
       }
@@ -167,6 +170,7 @@ export default {
       yDirection = parseInt(yDirection);
       let tile = this.$root.$data.tiles.find(tile => tile.x === tileX && tile.y === tileY);
       let score = tile.value * tile.letterMultiplier;
+      console.log(score);
       let wordMultiplier = [];
       wordMultiplier.push(tile.wordMultiplier);
       while(!endOfLetters) {
