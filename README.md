@@ -1,5 +1,9 @@
 # scrooble
+A non-copyright infringing homage to the famous board game scr@bble, done entirely in Vue.js
+See and play with it live at https://scrooble.netlify.app/
 
+
+# NPM Commands
 ## Project setup
 ```
 npm install
